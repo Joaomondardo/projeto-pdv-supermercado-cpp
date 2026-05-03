@@ -1,0 +1,20 @@
+# Binários e Compilados
+build/
+*.exe
+*.o
+*.obj
+
+# Arquivos de Bibliotecas (Opcional, mas recomendado ignorar se forem grandes)
+# libmysql.dll
+
+# Configurações de IDE
+.vscode/
+.settings/
+.idea/
+Makefile.win
+*.layout
+*.depend
+
+# Temporários e Logs
+*.log
+temp/
