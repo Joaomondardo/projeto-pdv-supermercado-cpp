@@ -5,6 +5,7 @@
 #include "estoque.h"
 #include "util.h"
 #include "database.h"
+#include "ui.h"
 
 void gravarMovimentacao(int codigo, const char *nome, char tipo, int qtd, int saldo)
 {
@@ -33,6 +34,7 @@ void registrarEntrada()
     if (indice == -1)
     {
         printf("Produto nao encontrado.\n");
+        pausar();
         return;
     }
 
@@ -57,6 +59,7 @@ void registrarEntrada()
 
     gravarMovimentacao(codigo, produtos[indice].nome, 'E', qtd, produtos[indice].quantidade);
     printf("Entrada registrada. Novo saldo: %d\n", produtos[indice].quantidade);
+    pausar();
 }
 
 void registrarSaida()
@@ -71,6 +74,7 @@ void registrarSaida()
     if (indice == -1)
     {
         printf("Produto nao encontrado.\n");
+        pausar();
         return;
     }
 
@@ -100,6 +104,7 @@ void registrarSaida()
 
     gravarMovimentacao(codigo, produtos[indice].nome, 'S', qtd, produtos[indice].quantidade);
     printf("Saida registrada. Novo saldo: %d\n", produtos[indice].quantidade);
+    pausar();
 }
 
 /* Versao direta chamada pelo modulo de caixa (PDV) */
@@ -138,6 +143,7 @@ void listarMovimentacoes()
 
     if (!encontrou) printf("Nenhuma movimentacao registrada no banco.\n");
     mysql_free_result(resultado);
+    pausar();
 }
 
 void listarMovimentacoesPorProduto()
@@ -181,4 +187,5 @@ void listarMovimentacoesPorProduto()
 
     if (!encontrou) printf("Nenhuma movimentacao para este produto.\n");
     mysql_free_result(resultado);
+    pausar();
 }

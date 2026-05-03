@@ -408,6 +408,7 @@ void editarProduto()
         printf("Produto atualizado com sucesso no banco de dados!\n");
     }
     // ========================================================
+    pausar();
 }
 
 void excluirProduto()
@@ -423,6 +424,7 @@ void excluirProduto()
     if (indice == -1)
     {
         printf("Produto nao encontrado.\n");
+        pausar();
         return;
     }
 
@@ -451,6 +453,7 @@ void excluirProduto()
         printf("Produto excluido com sucesso do banco de dados!\n");
     }
     // ========================================================
+    pausar();
 }
 
 void mostrarValorTotal()
@@ -461,6 +464,7 @@ void mostrarValorTotal()
     if (total == 0)
     {
         printf("Nenhum produto cadastrado.\n");
+        pausar();
         return;
     }
 
@@ -479,7 +483,9 @@ void mostrarValorTotal()
         totalGeral += sub;
     }
 
-    printf("%-25s  %-15s  %8s  %6s  %12.2f\n",
-           "TOTAL", "", "", "", totalGeral);
+    printf("\n--------------------------------------------------------------------------\n");
+    printf("  VALOR TOTAL DO ESTOQUE: R$ %.2f\n", totalGeral);
+    printf("--------------------------------------------------------------------------\n");
+    
+    pausar();
 }
-
