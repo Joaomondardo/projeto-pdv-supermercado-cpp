@@ -1,13 +1,13 @@
-# 🛒 Sistema de PDV & Controle de Estoque (C++ + MySQL)
+# Sistema de PDV & Controle de Estoque (C++ + MySQL)
 
 Este é um projeto experimental de um sistema de Ponto de Venda (PDV) e Gestão de Estoque para supermercados. O sistema foi desenvolvido em **C++** com integração direta ao banco de dados **MySQL**, focando em uma interface de terminal moderna, funcional e intuitiva.
 
 > [!NOTE]
-> Este projeto foi desenvolvido para fins de aprendizado e diversão, utilizando **Inteligência Artificial** como assistente de codificação para explorar integrações complexas e design de interface em modo texto.
+> Este projeto foi desenvolvido para fins de aprendizado e diversão, utilizando **IA** como assistente de codificação para explorar integrações complexas e design de interface em modo texto.
 
 ---
 
-## ✨ Funcionalidades
+##  Funcionalidades
 
 - **Módulo PDV (Caixa):** Venda de itens com busca por código, cálculo automático de subtotal, total e troco.
 - **Gestão de Estoque:** Cadastro, edição, exclusão e listagem de produtos com filtros.
@@ -17,7 +17,7 @@ Este é um projeto experimental de um sistema de Ponto de Venda (PDV) e Gestão 
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+## Tecnologias Utilizadas
 
 - **Linguagem:** C++ (Padrão C++11 ou superior)
 - **Banco de Dados:** MySQL Server 8.0
@@ -26,7 +26,7 @@ Este é um projeto experimental de um sistema de Ponto de Venda (PDV) e Gestão 
 
 ---
 
-## 🚀 Como Executar o Projeto
+## Como Executar o Projeto
 
 Para rodar este projeto em sua máquina, siga os passos abaixo:
 
@@ -58,7 +58,7 @@ g++ src/*.cpp -I "C:\Program Files\MySQL\MySQL Server 8.0\include" -L "C:\Progra
 
 ---
 
-## 📸 Demonstração do Visual
+## Demonstração do Visual
 O sistema utiliza um sistema de cores customizado para facilitar a leitura:
 - **Verde:** Sucesso e Entradas.
 - **Vermelho:** Erros e Saídas de estoque.
@@ -66,8 +66,4 @@ O sistema utiliza um sistema de cores customizado para facilitar a leitura:
 
 ---
 
-## 🤝 Contribuição
-Sinta-se à vontade para clonar, testar e sugerir melhorias! Este é um projeto "playground" para ver até onde podemos levar a automação e organização de um sistema comercial simples.
-
----
-**Desenvolvido por João Mondardo** (Com auxílio de IA)
+**Desenvolvido por João Vitor Mondardo dos Santos**
