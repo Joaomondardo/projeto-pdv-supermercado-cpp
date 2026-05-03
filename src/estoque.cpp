@@ -468,24 +468,27 @@ void mostrarValorTotal()
         return;
     }
 
-    printf("\n%-25s  %-15s  %8s  %6s  %12s\n",
-           "Nome", "Categoria", "Preco", "Qtd.", "Subtotal");
-    printf("%-25s  %-15s  %8s  %6s  %12s\n",
-           "-------------------------", "---------------",
-           "--------", "------", "------------");
+    printf("\n");
+    attr(ATTR_HEADER);
+    printf("  %-30s | %-22s | %8s | %6s | %10s ",
+           "NOME DO PRODUTO", "CATEGORIA", "PRECO", "QTD.", "SUBTOTAL");
+    cor_reset();
+    printf("\n");
 
     for (i = 0; i < total; i++)
     {
         float sub = produtos[i].preco * produtos[i].quantidade;
-        printf("%-25s  %-15s  %8.2f  %6d  %12.2f\n",
+        printf("  %-30.30s | %-22.22s | %8.2f | %6d | %10.2f\n",
                produtos[i].nome, produtos[i].categoria,
                produtos[i].preco, produtos[i].quantidade, sub);
         totalGeral += sub;
     }
 
-    printf("\n--------------------------------------------------------------------------\n");
+    printf("\n  ");
+    linha_horizontal('=');
     printf("  VALOR TOTAL DO ESTOQUE: R$ %.2f\n", totalGeral);
-    printf("--------------------------------------------------------------------------\n");
+    printf("  ");
+    linha_horizontal('=');
     
     pausar();
 }
