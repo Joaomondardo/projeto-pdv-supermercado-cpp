@@ -37,7 +37,8 @@ CREATE TABLE IF NOT EXISTS movimentacoes (
 CREATE TABLE IF NOT EXISTS usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
     login VARCHAR(50) UNIQUE,
-    senha VARCHAR(5)
+    senha VARCHAR(5),
+    nivel VARCHAR(10) DEFAULT 'GERENTE' -- 'GERENTE' ou 'CAIXA'
 );
 
 -- Tabela de vendas (cabecalho de cada venda no PDV)

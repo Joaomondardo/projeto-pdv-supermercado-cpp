@@ -1,78 +1,102 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "auth.h"
-#include "database.h" // Importamos o banco para poder ler a senha!
+#include "database.h"
+#include "util.h"
+
+char usuarioLogado[50] = "";
+char usuarioNivel[15] = "CAIXA";
 
 int verificarSenha()
 {
-    char armazenada[50] = "";
+    char login[50];
     char tentativa[50];
+    char armazenada[50] = "";
     int  t;
 
-    // Busca a senha do usuário 'admin' no banco
-    if (mysql_query(conexao, "SELECT senha FROM usuarios WHERE login='admin'")) {
-        printf("Erro ao buscar senha no banco de dados: %s\n", mysql_error(conexao));
+    // Verifica se existem usuários no banco
+    if (mysql_query(conexao, "SELECT COUNT(*) FROM usuarios")) {
+        printf("Erro ao verificar banco de dados.\n");
         return 0;
     }
+    MYSQL_RES *res_count = mysql_store_result(conexao);
+    MYSQL_ROW row_count = mysql_fetch_row(res_count);
+    int total_users = atoi(row_count[0]);
+    mysql_free_result(res_count);
 
-    MYSQL_RES *resultado = mysql_store_result(conexao);
-
-    // Se o banco está vazio (não encontrou o admin), é o primeiro acesso
-    if (resultado == NULL || mysql_num_rows(resultado) == 0)
+    // Se o banco está vazio, cria o primeiro Gerente
+    if (total_users == 0)
     {
-        if (resultado) mysql_free_result(resultado);
+        printf("=== CONFIGURACAO DE PRIMEIRO ACESSO (GERENTE) ===\n");
+        printf("Defina o login do Gerente: ");
+        fgets(login, sizeof(login), stdin);
+        login[strcspn(login, "\n")] = '\0';
 
-        /* Primeiro acesso: definir senha */
-        printf("=== PRIMEIRO ACESSO ===\n");
         do {
-            printf("Defina uma senha para o sistema (max 5 caracteres): ");
+            printf("Defina a senha (max 5 caracteres): ");
             fgets(armazenada, sizeof(armazenada), stdin);
             armazenada[strcspn(armazenada, "\n")] = '\0';
             
-            if (strlen(armazenada) > 5) {
-                printf("A senha so pode ter no maximo 5 caracteres. Tente novamente.\n");
-            } else if (strlen(armazenada) == 0) {
-                printf("A senha nao pode ser vazia.\n");
-            }
+            if (strlen(armazenada) > 5) printf("Maximo 5 caracteres!\n");
         } while (strlen(armazenada) > 5 || strlen(armazenada) == 0);
 
         char query[1024];
         char senhaBlindada[300];
+        char loginBlindado[150];
         blindarTexto(armazenada, senhaBlindada);
-        snprintf(query, sizeof(query), "INSERT INTO usuarios (login, senha) VALUES ('admin', '%s')", senhaBlindada);
+        blindarTexto(login, loginBlindado);
+
+        snprintf(query, sizeof(query), "INSERT INTO usuarios (login, senha, nivel) VALUES ('%s', '%s', 'GERENTE')", loginBlindado, senhaBlindada);
         if (mysql_query(conexao, query)) {
-            printf("Erro ao salvar a senha no banco.\n");
+            printf("Erro ao criar usuario mestre.\n");
             return 0;
         }
 
-        printf("Senha definida! Bem-vindo ao sistema.\n\n");
-        return 1;
+        printf("Gerente criado com sucesso! Use este login para acessar.\n\n");
     }
 
-    // Se encontrou, lê a senha armazenada
-    MYSQL_ROW linha = mysql_fetch_row(resultado);
-    strcpy(armazenada, linha[0]);
-    mysql_free_result(resultado);
-
+    // Fluxo de Login Normal
     for (t = 3; t > 0; t--)
     {
-        printf("Senha (%d tentativa%s restante%s): ",
-               t, t == 1 ? "" : "s", t == 1 ? "" : "s");
+        printf("\n--- LOGIN DO SISTEMA ---\n");
+        printf("Usuario: ");
+        fgets(login, sizeof(login), stdin);
+        login[strcspn(login, "\n")] = '\0';
+
+        printf("Senha: ");
         fgets(tentativa, sizeof(tentativa), stdin);
         tentativa[strcspn(tentativa, "\n")] = '\0';
 
+        char loginBlindado[150];
         char tentativaBlindada[300];
+        blindarTexto(login, loginBlindado);
         blindarTexto(tentativa, tentativaBlindada);
 
-        if (strcmp(tentativaBlindada, armazenada) == 0)
-        {
-            printf("Acesso permitido.\n\n");
+        char query[512];
+        snprintf(query, sizeof(query), "SELECT senha, nivel FROM usuarios WHERE login='%s'", loginBlindado);
+        
+        if (mysql_query(conexao, query)) {
+            printf("Erro ao buscar usuario.\n");
+            continue;
+        }
+
+        MYSQL_RES *res = mysql_store_result(conexao);
+        MYSQL_ROW row = mysql_fetch_row(res);
+
+        if (row && strcmp(tentativaBlindada, row[0]) == 0) {
+            strcpy(usuarioLogado, login);
+            strcpy(usuarioNivel, row[1]);
+            printf("Acesso permitido como %s.\n\n", usuarioNivel);
+            mysql_free_result(res);
             return 1;
         }
-        printf("Senha incorreta.\n");
+        
+        if (res) mysql_free_result(res);
+        printf("Login ou senha incorretos. (%d tentativas restantes)\n", t - 1);
     }
 
-    printf("Acesso bloqueado. Encerrando.\n");
+    printf("Acesso bloqueado.\n");
     return 0;
 }
 
@@ -80,15 +104,20 @@ void alterarSenha()
 {
     char atual[50], nova[50], confirmacao[50], tentativa[50];
 
-    // Busca a senha atual no banco
-    if (mysql_query(conexao, "SELECT senha FROM usuarios WHERE login='admin'")) {
+    // Busca a senha atual do usuario logado no banco
+    char query_sel[512];
+    char loginBlindado[150];
+    blindarTexto(usuarioLogado, loginBlindado);
+    snprintf(query_sel, sizeof(query_sel), "SELECT senha FROM usuarios WHERE login='%s'", loginBlindado);
+
+    if (mysql_query(conexao, query_sel)) {
         printf("Erro ao consultar banco de dados.\n");
         return;
     }
 
     MYSQL_RES *resultado = mysql_store_result(conexao);
     if (resultado == NULL || mysql_num_rows(resultado) == 0) {
-        printf("Nenhum usuario encontrado no banco.\n");
+        printf("Usuario nao encontrado.\n");
         if (resultado) mysql_free_result(resultado);
         return;
     }
@@ -101,7 +130,10 @@ void alterarSenha()
     fgets(tentativa, sizeof(tentativa), stdin);
     tentativa[strcspn(tentativa, "\n")] = '\0';
 
-    if (strcmp(tentativa, atual) != 0)
+    char tentativaBlindada[300];
+    blindarTexto(tentativa, tentativaBlindada);
+
+    if (strcmp(tentativaBlindada, atual) != 0)
     {
         printf("Senha incorreta.\n");
         return;
@@ -129,12 +161,13 @@ void alterarSenha()
         return;
     }
 
-    // Grava a nova senha no banco de dados com protecao contra SQL Injection!
-    char query[1024];
+    // Grava a nova senha no banco de dados com protecao
+    char query_upd[1024];
     char novaBlindada[300];
     blindarTexto(nova, novaBlindada);
-    snprintf(query, sizeof(query), "UPDATE usuarios SET senha='%s' WHERE login='admin'", novaBlindada);
-    if (mysql_query(conexao, query)) {
+    snprintf(query_upd, sizeof(query_upd), "UPDATE usuarios SET senha='%s' WHERE login='%s'", novaBlindada, loginBlindado);
+    
+    if (mysql_query(conexao, query_upd)) {
         printf("Erro ao salvar nova senha no banco.\n");
         return;
     }

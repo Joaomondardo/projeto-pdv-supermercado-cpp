@@ -7,6 +7,7 @@
 #include "database.h"
 #include "util.h"
 #include "ui.h"
+#include "impressora.h"
 
 /* ═══════════════════════════════════════════════════════
    ESTRUTURA DO CARRINHO DE COMPRAS
@@ -361,6 +362,25 @@ static void finalizarVenda()
     // Mostra e salva o cupom com o número real do banco
     imprimirCupom(num_venda);
     salvarEImprimirCupom(num_venda);
+
+    // --- NOVA FUNCIONALIDADE: IMPRESSAO TERMICA ---
+    printf("\n  Deseja imprimir o cupom físico na IMPRESSORA TERMICA? (s/n): ");
+    char resp_fisica;
+    scanf(" %c", &resp_fisica);
+    limparBuffer();
+
+    if (resp_fisica == 's' || resp_fisica == 'S') {
+        ItemCupom itensFisicos[MAX_ITENS_VENDA];
+        for (i = 0; i < totalItens; i++) {
+            strncpy(itensFisicos[i].nome, carrinho[i].nome, sizeof(itensFisicos[i].nome)-1);
+            itensFisicos[i].nome[sizeof(itensFisicos[i].nome)-1] = '\0';
+            itensFisicos[i].qtd = carrinho[i].qtd;
+            itensFisicos[i].preco = carrinho[i].preco_unit;
+            itensFisicos[i].subtotal = carrinho[i].subtotal;
+        }
+        imprimirCupomFisico(itensFisicos, totalItens, totalVenda, pago > 0 ? pago : totalVenda, (pago > totalVenda ? pago - totalVenda : 0.0f));
+    }
+    // ----------------------------------------------
 
     limparCarrinho();
     printf("  Venda #%04d finalizada com sucesso!\n", num_venda);

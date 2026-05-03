@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDV Premium | Supermercado</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar de Navegação -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">🛒</div>
+                <span>PDV Pro</span>
+            </div>
+            <nav>
+                <button class="nav-item active" id="btn-caixa">📟 Caixa</button>
+                <button class="nav-item" id="btn-estoque">📦 Estoque</button>
+                <button class="nav-item" id="btn-config">⚙️ Config</button>
+            </nav>
+            <div class="user-profile">
+                <div class="avatar">G</div>
+                <div class="user-info">
+                    <p class="user-name" id="user-display">Gerente</p>
+                    <p class="user-status">Online</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Área Principal -->
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="search-box">
+                    <input type="text" placeholder="Buscar produto por nome ou código (F1)..." id="search-input">
+                </div>
+                <div class="system-time" id="clock">00:00:00</div>
+            </header>
+
+            <section class="workspace">
+                <!-- Grid de Produtos -->
+                <div class="product-grid" id="product-list">
+                    <!-- Produtos serão inseridos aqui via JS -->
+                </div>
+
+                <!-- Painel do Carrinho -->
+                <div class="cart-panel" id="cart-view">
+                    <div class="cart-header">
+                        <h3>Carrinho Atual</h3>
+                        <span class="item-count" id="cart-count">0 itens</span>
+                    </div>
+                    <div class="cart-items" id="cart-list">
+                        <!-- Itens do carrinho aqui -->
+                    </div>
+                    <div class="cart-footer">
+                        <div class="total-row">
+                            <span>Subtotal</span>
+                            <span id="subtotal">R$ 0,00</span>
+                        </div>
+                        <div class="total-row grand-total">
+                            <span>TOTAL</span>
+                            <span id="total-venda">R$ 0,00</span>
+                        </div>
+                        <button class="btn-checkout" id="finalize-btn">FINALIZAR VENDA (F5)</button>
+                        <button class="btn-clear" id="clear-btn">Limpar Carrinho</button>
+                    </div>
+                </div>
+
+                <!-- Seção de Estoque (Escondida por padrão) -->
+                <div class="inventory-view" id="inventory-view" style="display: none;">
+                    <div class="view-header">
+                        <h2>Gestão de Estoque</h2>
+                        <button class="btn-add-prod" onclick="openAddProduct()">+ Novo Produto</button>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Cód</th>
+                                <th>Nome</th>
+                                <th>Preço</th>
+                                <th>Qtd</th>
+                                <th>Categoria</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventory-table-body">
+                            <!-- Preenchido via JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Seção de Config (Escondida por padrão) -->
+                <div class="config-view" id="config-view" style="display: none;">
+                    <h2>Configurações do Sistema</h2>
+                    <div class="config-card">
+                        <h3>Segurança</h3>
+                        <button class="btn-secondary" onclick="alert('Funcionalidade em desenvolvimento')">Alterar Senha</button>
+                    </div>
+                    <div class="config-card">
+                        <h3>Banco de Dados</h3>
+                        <p>Status: <span style="color: var(--accent)">Conectado</span></p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal de Finalização -->
+    <div class="modal" id="payment-modal">
+        <div class="modal-content">
+            <h2>Finalizar Venda</h2>
+            <div class="payment-options">
+                <button class="pay-method">💵 Dinheiro</button>
+                <button class="pay-method">💳 Cartão</button>
+                <button class="pay-method">📱 PIX</button>
+            </div>
+            <div class="input-group">
+                <label>Valor Recebido</label>
+                <input type="number" id="pay-amount" placeholder="0.00">
+            </div>
+            <div class="change-display">
+                <span>Troco:</span>
+                <span id="change-value">R$ 0,00</span>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+                <button class="btn-confirm" onclick="processPayment()">Confirmar Pagamento</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

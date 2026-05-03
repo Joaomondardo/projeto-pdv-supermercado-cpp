@@ -1,13 +1,13 @@
-# 🛒 Sistema PDV & Controle de Estoque Supermercado (C++/MySQL/Docker)
+# Sistema PDV & Controle de Estoque Supermercado (C++/MySQL/Docker)
 
-Este é um projeto de um sistema de Ponto de Venda (PDV) e Gestão de Estoque profissional para supermercados. O sistema foi desenvolvido em **C++** com integração robusta ao banco de dados **MySQL**, utilizando **Docker** para infraestrutura e focando em uma interface de terminal moderna, segura e intuitiva.
+Este é um projeto experimental é de um sistema de Ponto de Venda (PDV) e Gestão de Estoque profissional para supermercados. O sistema foi desenvolvido em **C++** com integração robusta ao banco de dados **MySQL**, utilizando **Docker** para infraestrutura e focando em uma interface de terminal moderna, segura e intuitiva.
 
 > [!NOTE]
 > Este projeto foi desenvolvido para fins de aprendizado e diversão, utilizando **IA** como assistente de codificação para explorar integrações complexas, design de interface em modo texto e segurança de dados.
 
 ---
 
-## 🚀 Funcionalidades Principais
+## Funcionalidades Principais
 
 - **Módulo PDV (Caixa):** Interface otimizada para vendas rápidas, cálculo automático de subtotal, total e troco.
 - **Gestão de Estoque:** CRUD completo (Cadastro, Edição, Exclusão e Listagem) com suporte a categorias e filtros.
@@ -18,7 +18,7 @@ Este é um projeto de um sistema de Ponto de Venda (PDV) e Gestão de Estoque pr
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+## Tecnologias Utilizadas
 
 - **Linguagem:** C++17 (Compilador MinGW-w64)
 - **Banco de Dados:** MySQL Server 8.0
@@ -27,7 +27,7 @@ Este é um projeto de um sistema de Ponto de Venda (PDV) e Gestão de Estoque pr
 
 ---
 
-## 📦 Como Rodar o Projeto
+## Como Rodar o Projeto
 
 A maneira mais fácil e recomendada de rodar o projeto é utilizando o **Docker**.
 
@@ -51,7 +51,7 @@ O projeto já vem com as **Tasks do VS Code** configuradas:
 
 ---
 
-## 🛡️ Destaques Técnicos
+## Destaques Técnicos
 
 Durante o desenvolvimento, o sistema foi refinado para seguir boas práticas de engenharia:
 - **Tratamento de Locale:** Forçado para o padrão "C" para garantir que o MySQL receba decimais com ponto (`.`), independentemente do idioma do Windows.

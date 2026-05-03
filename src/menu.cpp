@@ -7,6 +7,7 @@
 #include "util.h"
 #include "caixa.h"
 #include "ui.h"
+#include "web_server.h"
 
 void menu()
 {
@@ -19,29 +20,31 @@ void menu()
         cabecalho("SISTEMA DE CONTROLE DE ESTOQUE - V1.5");
 
         /* ── PRODUTOS ──────────────────────────*/
-        titulo_secao("GESTAO DE PRODUTOS");
-        item_menu(1, "Cadastrar Novo");
-        item_menu(2, "Listar Todos");
-        item_menu(3, "Buscar Codigo");
-        item_menu(6, "Editar Existente");
-        item_menu(10, "Excluir Produto");
-        printf("\n");
+        if (strcmp(usuarioNivel, "GERENTE") == 0) {
+            titulo_secao("GESTAO DE PRODUTOS");
+            item_menu(1, "Cadastrar Novo");
+            item_menu(2, "Listar Todos");
+            item_menu(3, "Buscar Codigo");
+            item_menu(6, "Editar Existente");
+            item_menu(10, "Excluir Produto");
+            printf("\n");
 
-        /* ── ESTOQUE ───────────────────────────*/
-        titulo_secao("MOVIMENTACAO & SALDO");
-        item_menu(4, "Entrada (Compra)");
-        item_menu(5, "Saida (Avulsa)");
-        item_menu(7, "Valor Total R$");
-        printf("\n");
+            /* ── ESTOQUE ───────────────────────────*/
+            titulo_secao("MOVIMENTACAO & SALDO");
+            item_menu(4, "Entrada (Compra)");
+            item_menu(5, "Saida (Avulsa)");
+            item_menu(7, "Valor Total R$");
+            printf("\n");
 
-        /* ── RELATORIOS ──────────────────────────────────*/
-        titulo_secao("AUDITORIA & LOGS");
-        item_menu(8, "Historico Geral");
-        item_menu(9, "Kardex p/ Item");
-        printf("\n");
+            /* ── RELATORIOS ──────────────────────────────────*/
+            titulo_secao("AUDITORIA & LOGS");
+            item_menu(8, "Historico Geral");
+            item_menu(9, "Kardex p/ Item");
+            printf("\n");
+        }
 
         /* ── SISTEMA ─────────────────────────────────────*/
-        titulo_secao("CONFIGURACOES");
+        titulo_secao("SISTEMA");
         item_menu(11, "Trocar Senha");
         printf("\n");
 
@@ -50,6 +53,8 @@ void menu()
         attr(ATTR_PDV);
         printf("  [ 12 ]  >>  ACESSAR PONTO DE VENDA (CAIXA)  <<  ");
         cor_reset();
+        printf("\n");
+        item_menu(13, "Abrir Interface WEB (HTTP)");
         printf("\n");
 
         /* ── SAIR ────────────────────────────────────────*/
@@ -63,7 +68,7 @@ void menu()
         printf("\n");
         linha_horizontal('-');
         attr(ATTR_PROMPT);
-        printf("  DIGITE A OPCAO DESEJADA: ");
+        printf("  LOGADO COMO: %s | OPCAO: ", usuarioNivel);
         cor_reset();
         
         if (scanf("%d", &opcao) != 1) {
@@ -71,6 +76,15 @@ void menu()
             opcao = -1;
         } else {
             limparBuffer();
+        }
+
+        // BLOQUEIO DE ACESSO LOGICO
+        if (strcmp(usuarioNivel, "CAIXA") == 0 && (opcao >= 1 && opcao <= 10)) {
+            attr(ATTR_ERRO_BG);
+            printf("\n  [!] ACESSO NEGADO! Somente Gerentes podem acessar esta area.  ");
+            cor_reset();
+            Sleep(1500);
+            continue;
         }
 
         switch (opcao)
@@ -87,6 +101,7 @@ void menu()
             case 10: excluirProduto();                break;
             case 11: alterarSenha();                  break;
             case 12: modoCaixa();                     break;
+            case 13: iniciarServidorWeb(8080);        break;
             case  0:
                 printf("\n  Saindo...");
                 break;

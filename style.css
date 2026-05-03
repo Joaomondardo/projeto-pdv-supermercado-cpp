@@ -1,0 +1,334 @@
+:root {
+    --bg-dark: #0f111a;
+    --bg-card: #1a1d2e;
+    --accent: #00ff88;
+    --accent-hover: #00d471;
+    --text-main: #ffffff;
+    --text-muted: #8b949e;
+    --danger: #ff4d4d;
+    --border: #2d334a;
+    --sidebar-width: 240px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    overflow: hidden;
+    height: 100vh;
+}
+
+.app-container {
+    display: flex;
+    height: 100%;
+}
+
+/* Sidebar */
+.sidebar {
+    width: var(--sidebar-width);
+    background-color: var(--bg-card);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 40px;
+}
+
+.logo-icon {
+    font-size: 2rem;
+}
+
+nav {
+    flex-grow: 1;
+}
+
+.nav-item {
+    width: 100%;
+    padding: 12px 15px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    text-align: left;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: 0.2s;
+}
+
+.nav-item:hover {
+    background: rgba(0, 255, 136, 0.1);
+    color: var(--accent);
+}
+
+.nav-item.active {
+    background: var(--accent);
+    color: var(--bg-dark);
+    font-weight: 600;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    background: var(--accent);
+    color: var(--bg-dark);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+
+/* Main Content */
+.main-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.top-bar {
+    height: 70px;
+    padding: 0 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+}
+
+.search-box input {
+    width: 400px;
+    padding: 12px 20px;
+    background: var(--bg-dark);
+    border: 1px solid var(--border);
+    border-radius: 30px;
+    color: white;
+    outline: none;
+}
+
+.search-box input:focus {
+    border-color: var(--accent);
+}
+
+.system-time {
+    font-family: monospace;
+    font-size: 1.2rem;
+    color: var(--accent);
+}
+
+/* Workspace */
+.workspace {
+    display: flex;
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.product-grid {
+    flex-grow: 1;
+    padding: 25px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 20px;
+    overflow-y: auto;
+}
+
+/* Product Card */
+.product-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    padding: 15px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+
+.p-icon { font-size: 2.5rem; margin-bottom: 10px; }
+.p-name { font-weight: 600; font-size: 0.9rem; margin-bottom: 5px; }
+.p-price { color: var(--accent); font-weight: 700; font-size: 1.1rem; }
+
+/* Cart Panel */
+.cart-panel {
+    width: 380px;
+    background: var(--bg-card);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.cart-items {
+    flex-grow: 1;
+    overflow-y: auto;
+    margin: 20px 0;
+}
+
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.cart-footer {
+    padding-top: 20px;
+    border-top: 2px solid var(--border);
+}
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    color: var(--text-muted);
+}
+
+.grand-total {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--accent);
+    margin: 15px 0;
+}
+
+.btn-checkout {
+    width: 100%;
+    padding: 18px;
+    background: var(--accent);
+    border: none;
+    border-radius: 12px;
+    color: var(--bg-dark);
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+.btn-clear {
+    width: 100%;
+    background: transparent;
+    border: 1px solid var(--danger);
+    color: var(--danger);
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    top:0; left:0; width:100%; height:100%;
+    background: rgba(0,0,0,0.85);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: var(--bg-card);
+    padding: 40px;
+    border-radius: 20px;
+    width: 450px;
+    border: 1px solid var(--accent);
+}
+
+.payment-options {
+    display: flex;
+    gap: 10px;
+    margin: 25px 0;
+}
+
+.pay-method {
+    flex: 1;
+    padding: 15px;
+    background: var(--bg-dark);
+    border: 1px solid var(--border);
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+/* Tabelas de Dados */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.data-table th, .data-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+}
+
+.data-table th {
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.inventory-view, .config-view {
+    flex-grow: 1;
+    padding: 30px;
+    overflow-y: auto;
+}
+
+.view-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.btn-add-prod {
+    padding: 10px 20px;
+    background: var(--accent);
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.config-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+.btn-secondary {
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
