@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: estoque_mysql_db
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'estoque_supermercado'
+      MYSQL_USER: 'programa'
+      MYSQL_PASSWORD: '1234'
+      MYSQL_ROOT_PASSWORD: 'root'
+    ports:
+      - '3306:3306'
+    volumes:
+      # Isso faz com que o banco já nasça com suas tabelas e dados de teste
+      - ./schema.sql:/docker-entrypoint-initdb.d/1_schema.sql
+      - ./seed.sql:/docker-entrypoint-initdb.d/2_seed.sql
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:

@@ -40,6 +40,13 @@ No seu terminal MySQL ou MySQL Workbench, execute os scripts na seguinte ordem:
 1.  `schema.sql` (Cria o banco e as tabelas).
 2.  `seed.sql` (Insere dados de teste para você poder usar o sistema imediatamente).
 
+### 2.1 Executando com Docker (Recomendado)
+Se você tem o **Docker** instalado, não precisa configurar o MySQL manualmente. Basta rodar:
+```bash
+docker-compose up -d
+```
+Isso subirá o banco de dados já configurado com todos os dados e tabelas automaticamente.
+
 ### 3. Configuração de Credenciais
 Antes de compilar, ajuste as credenciais de acesso ao seu banco de dados no arquivo:
 `src/database.cpp`
