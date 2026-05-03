@@ -3,5 +3,6 @@
 
 void limparBuffer();
 void obterDataHora(char *dest);
+void formatarMoeda(float valor, char *destino);
 
 #endif

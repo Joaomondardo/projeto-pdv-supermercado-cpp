@@ -255,21 +255,25 @@ void listarProdutos()
     if (opcao == 1) ordenarPorCodigo();
     else if (opcao == 2) ordenarPorNome();
 
-    printf("\n%-6s  %-25s  %-15s  %8s  %6s\n",
+    printf("\n  %-6s  %-25s  %-15s  %10s  %6s\n",
            "Cod.", "Nome", "Categoria", "Preco", "Qtd.");
-    printf("%-6s  %-25s  %-15s  %8s  %6s\n",
+    printf("  %-6s  %-25s  %-15s  %10s  %6s\n",
            "------", "-------------------------",
-           "---------------", "--------", "------");
+           "---------------", "----------", "------");
 
     for (i = 0; i < total; i++)
     {
         if (filtrarCat && strcmp(produtos[i].categoria, filtro) != 0)
             continue;
-        printf("%-6d  %-25s  %-15s  %8.2f  %6d\n",
+            
+        char sPreco[20];
+        formatarMoeda(produtos[i].preco, sPreco);
+        
+        printf("  %-6d  %-25s  %-15s  %10s  %6d\n",
                produtos[i].codigo,
                produtos[i].nome,
                produtos[i].categoria,
-               produtos[i].preco,
+               sPreco,
                produtos[i].quantidade);
     }
     pausar();
@@ -332,14 +336,16 @@ void buscarProduto()
 
     printf("\n");
     attr(ATTR_HEADER);
-    printf("  %-6s | %-25s | %-15s | %8s | %6s  ", "COD.", "NOME", "CATEGORIA", "PRECO", "QTD.");
+    printf("  %-6s | %-25s | %-15s | %10s | %6s  ", "COD.", "NOME", "CATEGORIA", "PRECO", "QTD.");
     cor_reset();
     printf("\n");
 
     MYSQL_ROW linha;
     while ((linha = mysql_fetch_row(resultado))) {
-        printf("  %-6s | %-25s | %-15s | %8.2f | %6s\n", 
-               linha[0], linha[1], linha[2] ? linha[2] : "---", atof(linha[3]), linha[4]);
+        char sPreco[20];
+        formatarMoeda(atof(linha[3]), sPreco);
+        printf("  %-6s | %-25s | %-15s | %10s | %6s\n", 
+               linha[0], linha[1], linha[2] ? linha[2] : "---", sPreco, linha[4]);
     }
 
     mysql_free_result(resultado);
@@ -470,23 +476,30 @@ void mostrarValorTotal()
 
     printf("\n");
     attr(ATTR_HEADER);
-    printf("  %-30s | %-22s | %8s | %6s | %10s ",
+    printf("  %-30s | %-22s | %10s | %6s | %12s ",
            "NOME DO PRODUTO", "CATEGORIA", "PRECO", "QTD.", "SUBTOTAL");
     cor_reset();
     printf("\n");
 
     for (i = 0; i < total; i++)
     {
+        char sPreco[20], sSub[20];
         float sub = produtos[i].preco * produtos[i].quantidade;
-        printf("  %-30.30s | %-22.22s | %8.2f | %6d | %10.2f\n",
+        formatarMoeda(produtos[i].preco, sPreco);
+        formatarMoeda(sub, sSub);
+
+        printf("  %-30.30s | %-22.22s | %10s | %6d | %12s\n",
                produtos[i].nome, produtos[i].categoria,
-               produtos[i].preco, produtos[i].quantidade, sub);
+               sPreco, produtos[i].quantidade, sSub);
         totalGeral += sub;
     }
 
+    char sTotal[30];
+    formatarMoeda(totalGeral, sTotal);
+
     printf("\n  ");
     linha_horizontal('=');
-    printf("  VALOR TOTAL DO ESTOQUE: R$ %.2f\n", totalGeral);
+    printf("  VALOR TOTAL DO ESTOQUE: R$ %s\n", sTotal);
     printf("  ");
     linha_horizontal('=');
     

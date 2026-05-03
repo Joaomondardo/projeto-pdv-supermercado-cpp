@@ -135,10 +135,12 @@ static void imprimirCupom(int num_venda)
     printf("  %-28s  %5s  %10s\n", "----------------------------", "-----", "----------");
 
     for (i = 0; i < totalItens; i++) {
-        printf("  %-28s  %5d  R$%8.2f\n",
+        char sSub[20];
+        formatarMoeda(carrinho[i].subtotal, sSub);
+        printf("  %-28s  %5d  R$%10s\n",
                carrinho[i].nome,
                carrinho[i].qtd,
-               carrinho[i].subtotal);
+               sSub);
     }
 
     printf("  ------------------------------------------------\n");
@@ -276,7 +278,9 @@ static void finalizarVenda()
             printf("  [!] Valor insuficiente!\n");
             return;
         }
-        printf("  Troco: R$ %.2f\n", pago - totalVenda);
+        char sTroco[20];
+        formatarMoeda(pago - totalVenda, sTroco);
+        printf("  Troco: R$ %s\n", sTroco);
     } else if (opcao == 3) {
         forma = "Cartao de Debito";
     } else if (opcao == 4) {
@@ -284,7 +288,9 @@ static void finalizarVenda()
     }
 
     // Confirma a venda
-    printf("\n  Confirmar venda de R$ %.2f no %s? (s/n): ", totalVenda, forma);
+    char sTotal[20];
+    formatarMoeda(totalVenda, sTotal);
+    printf("\n  Confirmar venda de R$ %s no %s? (s/n): ", sTotal, forma);
     char conf;
     scanf("%c", &conf);
     limparBuffer();
@@ -367,9 +373,11 @@ void modoCaixa()
 
     do {
         /* ── STATUS DA VENDA ── */
+        char sSubtotal[20];
+        formatarMoeda(totalVenda, sSubtotal);
         printf("\n  ");
         attr(ATTR_HEADER);
-        printf(" SUBTOTAL: R$ %8.2f ", totalVenda);
+        printf(" SUBTOTAL: R$ %s ", sSubtotal);
         cor_reset();
         printf("  |  ITENS: %d\n", totalItens);
 
