@@ -1,4 +1,6 @@
 #include <iostream>
+#include <string.h>
+#include <stdlib.h>
 #include "database.h"
 
 using namespace std;
