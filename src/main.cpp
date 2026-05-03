@@ -1,5 +1,6 @@
 #include <iostream>
 #include <windows.h>
+#include <locale.h>
 #include "database.h" // Importa o nosso novo modulo de banco!
 #include "estoque.h"
 #include "auth.h"
@@ -8,6 +9,9 @@
 using namespace std;
 
 int main() {
+    // Garante que o ponto decimal seja sempre '.' (importante para o MySQL)
+    setlocale(LC_NUMERIC, "C");
+    
     // 1º Passo: Conectar ao banco de dados ANTES (pois a senha agora está lá!)
     if (!conectarBanco()) {
         system("pause");

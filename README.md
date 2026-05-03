@@ -1,75 +1,62 @@
-# Sistema de PDV & Controle de Estoque (C++ + MySQL)
+# 🛒 Sistema PDV & Controle de Estoque Supermercado (C++/MySQL/Docker)
 
-Este é um projeto experimental de um sistema de Ponto de Venda (PDV) e Gestão de Estoque para supermercados. O sistema foi desenvolvido em **C++** com integração direta ao banco de dados **MySQL**, focando em uma interface de terminal moderna, funcional e intuitiva.
+Este é um projeto de um sistema de Ponto de Venda (PDV) e Gestão de Estoque profissional para supermercados. O sistema foi desenvolvido em **C++** com integração robusta ao banco de dados **MySQL**, utilizando **Docker** para infraestrutura e focando em uma interface de terminal moderna, segura e intuitiva.
 
 > [!NOTE]
-> Este projeto foi desenvolvido para fins de aprendizado e diversão, utilizando **IA** como assistente de codificação para explorar integrações complexas e design de interface em modo texto.
+> Este projeto foi desenvolvido para fins de aprendizado e diversão, utilizando **IA** como assistente de codificação para explorar integrações complexas, design de interface em modo texto e segurança de dados.
 
 ---
 
-##  Funcionalidades
+## 🚀 Funcionalidades Principais
 
-- **Módulo PDV (Caixa):** Venda de itens com busca por código, cálculo automático de subtotal, total e troco.
-- **Gestão de Estoque:** Cadastro, edição, exclusão e listagem de produtos com filtros.
-- **Integração SQL:** Persistência real de dados. O estoque é atualizado automaticamente no banco após cada venda.
-- **Relatórios & Auditoria:** Histórico de movimentações (Kardex) para controle de entradas e saídas.
-- **Interface Moderna:** Uso de cores, tabelas formatadas e feedbacks visuais para uma melhor experiência do usuário.
+- **Módulo PDV (Caixa):** Interface otimizada para vendas rápidas, cálculo automático de subtotal, total e troco.
+- **Gestão de Estoque:** CRUD completo (Cadastro, Edição, Exclusão e Listagem) com suporte a categorias e filtros.
+- **Persistência Real (MySQL):** Todos os dados são salvos em um banco de dados relacional. O estoque é atualizado em tempo real após cada venda.
+- **Auditoria & Logs:** Histórico completo de todas as movimentações de entrada e saída (Kardex).
+- **Segurança de Dados:** Proteção contra **SQL Injection** em todos os campos de entrada e tratamento de estouro de buffer para maior estabilidade.
+- **Interface Moderna:** Uso de cores dinâmicas, tabelas formatadas e suporte a localidade (R$ e separadores decimais).
 
 ---
 
-## Tecnologias Utilizadas
+## 🛠️ Tecnologias Utilizadas
 
-- **Linguagem:** C++ (Padrão C++11 ou superior)
+- **Linguagem:** C++17 (Compilador MinGW-w64)
 - **Banco de Dados:** MySQL Server 8.0
-- **Driver de Conexão:** MySQL Connector/C (libmysql)
-- **Ambiente:** Windows (com suporte a cores no CMD/PowerShell)
+- **Infraestrutura:** Docker & Docker Compose (MySQL Conteinerizado)
+- **Driver:** MySQL Connector/C (libmysql)
 
 ---
 
-## Como Executar o Projeto
+## 📦 Como Rodar o Projeto
 
-Para rodar este projeto em sua máquina, siga os passos abaixo:
+A maneira mais fácil e recomendada de rodar o projeto é utilizando o **Docker**.
 
 ### 1. Pré-requisitos
-*   Ter o **MySQL Server** instalado e rodando.
-*   Um compilador C++ (recomendado **MinGW/g++**).
-*   As bibliotecas de desenvolvimento do MySQL instaladas (headers e libmysql).
+*   **Docker Desktop** instalado.
+*   **VS Code** com a extensão de C++ instalada.
+*   Compilador **MinGW-w64** configurado (ou o caminho ajustado no `tasks.json`).
 
-### 2. Configuração do Banco de Dados
-No seu terminal MySQL ou MySQL Workbench, execute os scripts na seguinte ordem:
-1.  `schema.sql` (Cria o banco e as tabelas).
-2.  `seed.sql` (Insere dados de teste para você poder usar o sistema imediatamente).
-
-### 2.1 Executando com Docker (Recomendado)
-Se você tem o **Docker** instalado, não precisa configurar o MySQL manualmente. Basta rodar:
+### 2. Subindo o Banco de Dados
+No terminal da raiz do projeto, execute:
 ```bash
 docker-compose up -d
 ```
-Isso subirá o banco de dados já configurado com todos os dados e tabelas automaticamente.
+*Isso criará o container MySQL, configurará as tabelas (`schema.sql`) e inserirá os dados de teste (`seed.sql`) automaticamente na porta 3306.*
 
-### 3. Configuração de Credenciais
-Antes de compilar, ajuste as credenciais de acesso ao seu banco de dados no arquivo:
-`src/database.cpp`
-
-```cpp
-// Altere para o seu usuário e senha do MySQL
-if (mysql_real_connect(conexao, "localhost", "SEU_USUARIO", "SUA_SENHA", "estoque_supermercado", 3306, NULL, 0))
-```
-
-### 4. Compilação
-Você pode compilar o projeto utilizando o comando abaixo (ajuste os caminhos se necessário):
-
-```bash
-g++ src/*.cpp -I "C:\Program Files\MySQL\MySQL Server 8.0\include" -L "C:\Program Files\MySQL\MySQL Server 8.0\lib" -lmysql -o estoque.exe
-```
+### 3. Compilação e Execução
+O projeto já vem com as **Tasks do VS Code** configuradas:
+1.  Aperte `Ctrl + Shift + B` para compilar o projeto.
+2.  O executável será gerado na pasta `build/estoque.exe`.
+3.  Para rodar, digite no terminal: `.\build\estoque.exe` ou aperte `F5`.
 
 ---
 
-## Demonstração do Visual
-O sistema utiliza um sistema de cores customizado para facilitar a leitura:
-- **Verde:** Sucesso e Entradas.
-- **Vermelho:** Erros e Saídas de estoque.
-- **Ciano/Amarelo:** Prompts e Cabeçalhos.
+## 🛡️ Destaques Técnicos
+
+Durante o desenvolvimento, o sistema foi refinado para seguir boas práticas de engenharia:
+- **Tratamento de Locale:** Forçado para o padrão "C" para garantir que o MySQL receba decimais com ponto (`.`), independentemente do idioma do Windows.
+- **Blindagem de SQL:** Uso de `mysql_real_escape_string` em todas as entradas de usuário.
+- **Robustez:** Proteção contra entradas de caracteres inválidos (letras em campos numéricos) para evitar loops infinitos.
 
 ---
 

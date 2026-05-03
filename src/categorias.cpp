@@ -50,7 +50,8 @@ void carregarCategorias()
     while ((linha = mysql_fetch_row(resultado))) {
         if (totalCategorias >= MAX_CATEGORIAS) break;
         categorias[totalCategorias].id = atoi(linha[0]);
-        strcpy(categorias[totalCategorias].nome, linha[1]);
+        strncpy(categorias[totalCategorias].nome, linha[1], sizeof(categorias[totalCategorias].nome) - 1);
+        categorias[totalCategorias].nome[sizeof(categorias[totalCategorias].nome) - 1] = '\0';
         totalCategorias++;
     }
     mysql_free_result(resultado);

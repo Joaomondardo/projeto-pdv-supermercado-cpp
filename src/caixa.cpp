@@ -306,13 +306,15 @@ static void finalizarVenda()
     obterDataHora(dh);
 
     // 1. Insere o cabeçalho da venda
-    char query[400];
-    sprintf(query,
+    char query[1024];
+    snprintf(query, sizeof(query),
         "INSERT INTO vendas (data_hora, total, forma_pagamento) VALUES ('%s', %.2f, '%s')",
         dh, totalVenda, forma);
 
     if (mysql_query(conexao, query)) {
-        printf("  [!] Erro ao registrar venda: %s\n", mysql_error(conexao));
+        cor(COR_ERRO);
+        printf("  [!] Erro fatal ao registrar venda no banco: %s\n", mysql_error(conexao));
+        cor_reset();
         return;
     }
 
@@ -321,16 +323,19 @@ static void finalizarVenda()
 
     // 3. Insere cada item da venda
     for (i = 0; i < totalItens; i++) {
-        char qitem[600];
-        char nomeBlindado[200];
+        char qitem[1024];
+        char nomeBlindado[300];
         blindarTexto(carrinho[i].nome, nomeBlindado);
 
-        sprintf(qitem,
+        snprintf(qitem, sizeof(qitem),
             "INSERT INTO itens_venda (venda_id, codigo_produto, nome_produto, quantidade, preco_unit, subtotal) "
             "VALUES (%d, %d, '%s', %d, %.2f, %.2f)",
             num_venda, carrinho[i].codigo, nomeBlindado,
             carrinho[i].qtd, carrinho[i].preco_unit, carrinho[i].subtotal);
-        mysql_query(conexao, qitem);
+            
+        if (mysql_query(conexao, qitem)) {
+            printf("  [!] Aviso: Erro ao registrar item %d no banco.\n", carrinho[i].codigo);
+        }
     }
     // ======================================================
 
@@ -340,10 +345,13 @@ static void finalizarVenda()
         if (indice != -1) {
             produtos[indice].quantidade -= carrinho[i].qtd;
 
-            char qstk[300];
-            sprintf(qstk, "UPDATE produtos SET quantidade=%d WHERE codigo=%d",
+            char qstk[512];
+            snprintf(qstk, sizeof(qstk), "UPDATE produtos SET quantidade=%d WHERE codigo=%d",
                     produtos[indice].quantidade, carrinho[i].codigo);
-            mysql_query(conexao, qstk);
+            
+            if (mysql_query(conexao, qstk)) {
+                printf("  [!] Erro critico ao atualizar estoque do produto %d!\n", carrinho[i].codigo);
+            }
 
             registrarSaidaDireta(carrinho[i].codigo, carrinho[i].nome,
                                  carrinho[i].qtd, produtos[indice].quantidade);
@@ -384,7 +392,12 @@ void modoCaixa()
         attr(ATTR_PROMPT);
         printf("  > CODIGO OU OPCAO: ");
         cor_reset();
-        scanf("%d", &opcao);
+        
+        opcao = -1; // Reseta para evitar loop infinito em caso de erro no scanf
+        if (scanf("%d", &opcao) != 1) {
+            limparBuffer();
+            continue;
+        }
         limparBuffer();
 
         switch (opcao) {

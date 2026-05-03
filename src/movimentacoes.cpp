@@ -12,10 +12,13 @@ void gravarMovimentacao(int codigo, const char *nome, char tipo, int qtd, int sa
     char dh[20];
     obterDataHora(dh);
     
-    // Insere a movimentação direto na nova tabela
-    char query[500];
-    sprintf(query, "INSERT INTO movimentacoes (codigo_produto, nome_produto, tipo, quantidade, saldo_atual, data_hora) VALUES (%d, '%s', '%c', %d, %d, '%s')", 
-            codigo, nome, tipo, qtd, saldo, dh);
+    // Insere a movimentação direto na nova tabela com blindagem contra SQL Injection
+    char query[1024];
+    char nomeBlindado[300];
+    blindarTexto(nome, nomeBlindado);
+
+    snprintf(query, sizeof(query), "INSERT INTO movimentacoes (codigo_produto, nome_produto, tipo, quantidade, saldo_atual, data_hora) VALUES (%d, '%s', '%c', %d, %d, '%s')", 
+            codigo, nomeBlindado, tipo, qtd, saldo, dh);
             
     if (mysql_query(conexao, query)) {
         printf("ERRO AO SALVAR MOVIMENTACAO NO BANCO: %s\n", mysql_error(conexao));
@@ -47,6 +50,7 @@ void registrarEntrada()
     if (qtd <= 0)
     {
         printf("Quantidade deve ser maior que zero.\n");
+        pausar();
         return;
     }
 
@@ -87,11 +91,13 @@ void registrarSaida()
     if (qtd <= 0)
     {
         printf("Quantidade deve ser maior que zero.\n");
+        pausar();
         return;
     }
     if (qtd > produtos[indice].quantidade)
     {
         printf("Estoque insuficiente. Disponivel: %d\n", produtos[indice].quantidade);
+        pausar();
         return;
     }
 

@@ -1,7 +1,7 @@
 #ifndef CATEGORIAS_H
 #define CATEGORIAS_H
 
-#define MAX_CATEGORIAS  20
+#define MAX_CATEGORIAS  50
 
 struct Categoria {
     int id;

@@ -3,7 +3,7 @@
 
 #include "database.h" // Já traz o MySQL e a conexao global
 
-#define MAX_PRODUTOS   100
+#define MAX_PRODUTOS   1000
 
 struct Produto
 {

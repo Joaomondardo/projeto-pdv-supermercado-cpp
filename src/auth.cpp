@@ -36,10 +36,10 @@ int verificarSenha()
             }
         } while (strlen(armazenada) > 5 || strlen(armazenada) == 0);
 
-        char query[400];
-        char senhaBlindada[150];
+        char query[1024];
+        char senhaBlindada[300];
         blindarTexto(armazenada, senhaBlindada);
-        sprintf(query, "INSERT INTO usuarios (login, senha) VALUES ('admin', '%s')", senhaBlindada);
+        snprintf(query, sizeof(query), "INSERT INTO usuarios (login, senha) VALUES ('admin', '%s')", senhaBlindada);
         if (mysql_query(conexao, query)) {
             printf("Erro ao salvar a senha no banco.\n");
             return 0;
@@ -61,7 +61,10 @@ int verificarSenha()
         fgets(tentativa, sizeof(tentativa), stdin);
         tentativa[strcspn(tentativa, "\n")] = '\0';
 
-        if (strcmp(tentativa, armazenada) == 0)
+        char tentativaBlindada[300];
+        blindarTexto(tentativa, tentativaBlindada);
+
+        if (strcmp(tentativaBlindada, armazenada) == 0)
         {
             printf("Acesso permitido.\n\n");
             return 1;
@@ -127,10 +130,10 @@ void alterarSenha()
     }
 
     // Grava a nova senha no banco de dados com protecao contra SQL Injection!
-    char query[400];
-    char novaBlindada[150];
+    char query[1024];
+    char novaBlindada[300];
     blindarTexto(nova, novaBlindada);
-    sprintf(query, "UPDATE usuarios SET senha='%s' WHERE login='admin'", novaBlindada);
+    snprintf(query, sizeof(query), "UPDATE usuarios SET senha='%s' WHERE login='admin'", novaBlindada);
     if (mysql_query(conexao, query)) {
         printf("Erro ao salvar nova senha no banco.\n");
         return;

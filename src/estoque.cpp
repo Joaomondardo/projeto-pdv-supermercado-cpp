@@ -39,17 +39,26 @@ void carregarProdutos()
     MYSQL_ROW linha;
     // O fetch_row vai pegando produto por produto do banco
     while ((linha = mysql_fetch_row(resultado))) {
-        if (total >= MAX_PRODUTOS) break; // Se atingir o limite da memória, para
+        if (total >= MAX_PRODUTOS) {
+            printf("\n[AVISO] Limite de memoria atingido (%d produtos). Alguns itens do banco nao foram carregados.\n", MAX_PRODUTOS);
+            break;
+        }
         
         produtos[total].codigo = atoi(linha[0]);
-        strcpy(produtos[total].nome, linha[1]);
+        // Copia segura para evitar estouro caso o banco tenha nomes maiores que o esperado
+        strncpy(produtos[total].nome, linha[1], sizeof(produtos[total].nome) - 1);
+        produtos[total].nome[sizeof(produtos[total].nome) - 1] = '\0';
+        
         produtos[total].preco = atof(linha[2]);
         produtos[total].quantidade = atoi(linha[3]);
         produtos[total].categoria_id = atoi(linha[4]);
         
-        // Pode acontecer do banco retornar NULL se a categoria foi apagada
-        if (linha[5]) strcpy(produtos[total].categoria, linha[5]);
-        else strcpy(produtos[total].categoria, "Desconhecida");
+        if (linha[5]) {
+            strncpy(produtos[total].categoria, linha[5], sizeof(produtos[total].categoria) - 1);
+            produtos[total].categoria[sizeof(produtos[total].categoria) - 1] = '\0';
+        } else {
+            strcpy(produtos[total].categoria, "Desconhecida");
+        }
         
         total++;
     }
@@ -122,12 +131,19 @@ bool buscarProdutoPorCodigoDB(int codigo, Produto *p)
     MYSQL_ROW linha = mysql_fetch_row(resultado);
     if (linha) {
         p->codigo = atoi(linha[0]);
-        strcpy(p->nome, linha[1]);
+        strncpy(p->nome, linha[1], sizeof(p->nome) - 1);
+        p->nome[sizeof(p->nome) - 1] = '\0';
+        
         p->preco = atof(linha[2]);
         p->quantidade = atoi(linha[3]);
         p->categoria_id = atoi(linha[4]);
-        if (linha[5]) strcpy(p->categoria, linha[5]);
-        else strcpy(p->categoria, "Desconhecida");
+        
+        if (linha[5]) {
+            strncpy(p->categoria, linha[5], sizeof(p->categoria) - 1);
+            p->categoria[sizeof(p->categoria) - 1] = '\0';
+        } else {
+            strcpy(p->categoria, "Desconhecida");
+        }
         
         mysql_free_result(resultado);
         return true;
@@ -147,7 +163,8 @@ void cadastrarProduto()
 
     if (total >= MAX_PRODUTOS)
     {
-        printf("Limite de %d produtos atingido.\n", MAX_PRODUTOS);
+        printf("Limite de %d produtos atingido na memoria.\n", MAX_PRODUTOS);
+        pausar();
         return;
     }
 
@@ -158,11 +175,13 @@ void cadastrarProduto()
     if (codigo <= 0)
     {
         printf("Codigo deve ser maior que zero.\n");
+        pausar();
         return;
     }
     if (buscarIndicePorCodigo(codigo) != -1)
     {
         printf("Ja existe um produto com o codigo %d.\n", codigo);
+        pausar();
         return;
     }
 
@@ -175,6 +194,7 @@ void cadastrarProduto()
     if (strlen(produtos[total].nome) == 0)
     {
         printf("Nome nao pode ser vazio.\n");
+        pausar();
         return;
     }
 
@@ -202,14 +222,14 @@ void cadastrarProduto()
 
     // ========================================================
     // NOVO CÓDIGO DO BANCO DE DADOS:
-    char query[800];
-    char nomeBlindado[200];
+    char query[1024];
+    char nomeBlindado[300];
     
     // Escapa os textos para evitar quebra do SQL
     blindarTexto(produtos[total].nome, nomeBlindado);
 
     // Cria o comando SQL (INSERT) usando as variáveis blindadas (AGORA COM CATEGORIA_ID)
-    sprintf(query, "INSERT INTO produtos (codigo, nome, preco, quantidade, categoria_id) VALUES (%d, '%s', %.2f, %d, %d);",
+    snprintf(query, sizeof(query), "INSERT INTO produtos (codigo, nome, preco, quantidade, categoria_id) VALUES (%d, '%s', %.2f, %d, %d);",
             produtos[total].codigo, 
             nomeBlindado, 
             produtos[total].preco, 
@@ -400,12 +420,12 @@ void editarProduto()
 
     // ========================================================
     // ATUALIZA NO BANCO DE DADOS COM BLINDAGEM E FOREIGN KEY
-    char query[800];
-    char nomeBlindado[200];
+    char query[1024];
+    char nomeBlindado[300];
     
     blindarTexto(produtos[indice].nome, nomeBlindado);
 
-    sprintf(query, "UPDATE produtos SET nome='%s', categoria_id=%d, preco=%.2f WHERE codigo=%d;", 
+    snprintf(query, sizeof(query), "UPDATE produtos SET nome='%s', categoria_id=%d, preco=%.2f WHERE codigo=%d;", 
             nomeBlindado, produtos[indice].categoria_id, produtos[indice].preco, produtos[indice].codigo);
     
     if (mysql_query(conexao, query)) {
